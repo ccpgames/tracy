@@ -157,6 +157,12 @@ set(common_includes
     ${TRACY_PUBLIC_DIR}/common/TracyUwp.hpp
     ${TRACY_PUBLIC_DIR}/common/TracyYield.hpp)
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(OS_SPECIFIC_PATH "windows")
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(OS_SPECIFIC_PATH "macos")
+endif()
+
 install(TARGETS TracyClient
         EXPORT TracyConfig
         RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -170,8 +176,8 @@ install(FILES ${common_includes}
         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/common)
 install(EXPORT TracyConfig
         NAMESPACE Tracy::
-        FILE TracyTargets.cmake
-        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Tracy)
+        FILE ${CONFIG_FILE_NAME}
+        DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/Tracy/${OS_SPECIFIC_PATH})
 include(CMakePackageConfigHelpers)
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/Config.cmake.in
         "${CMAKE_CURRENT_BINARY_DIR}/TracyConfig.cmake"
